@@ -133,3 +133,6 @@ dmypy.json
 
 # Data folder
 data/
+
+# Dask
+notebooks/dask-worker-space/
