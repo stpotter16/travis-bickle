@@ -12,7 +12,10 @@ REQUIREMENTS = ["dask[complete]", "xgboost"]
 @contextlib.contextmanager
 def client_context():
     try:
-        cluster = coiled.Cluster(configuration='sam-potter/travis-bickle-config')
+        cluster = coiled.Cluster(
+            name='travis-bickle',
+            configuration='sam-potter/travis-bickle-config'
+        )
         client = Client(cluster)
         yield client
     finally:
