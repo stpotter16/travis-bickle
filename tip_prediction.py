@@ -48,7 +48,7 @@ def filter_data(df):
 
 
 def load_raw_data():
-    df = dd.read_parquet(
+    df = dd.read_csv(
         "s3://nyc-tlc/trip data/yellow_tripdata_2019-*.csv",
         parse_dates=["tpep_pickup_datetime", "tpep_dropoff_datetime"],
         dtype={
