@@ -46,7 +46,7 @@ def filter_data(df):
 
 def load_raw_data():
     df = dd.read_parquet(
-        "s3://nyc-taxi-tips/nyc-taxi/",
+        "s3://nyc-tlc/trip data/yellow_tripdata_2019-*.csv",
         parse_dates=["tpep_pickup_datetime", "tpep_dropoff_datetime"],
         dtype={
             "payment_type": "UInt8",
