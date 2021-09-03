@@ -6,7 +6,7 @@ from dask.distributed import Client
 from xgboost.dask import DaskDMatrix, predict, train
 
 ENVIRONMENT_NAME = 'travis-bickle-env'
-REQUIREMENTS_FILE = '/home/spotter/Documents/job/coiled_assessment/requirements.txt'
+REQUIREMENTS = ["dask[complete]", "xgboost"]
 
 
 @contextlib.contextmanager
@@ -16,7 +16,7 @@ def client_context():
         client = Client(cluster)
         yield client
     finally:
-        cluster_name = coiled.list_clusters().keys()[-1]
+        cluster_name = list(coiled.list_clusters().keys())[-1]
         coiled.delete_cluster(name=cluster_name)
         client.close()
 
@@ -70,7 +70,7 @@ def make_dmatrix(client, X, y):
 def make_software_env():
     coiled.create_software_environment(
         name=ENVIRONMENT_NAME,
-        pip=REQUIREMENTS_FILE,
+        pip=REQUIREMENTS,
     )
 
 
