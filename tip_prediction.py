@@ -41,7 +41,10 @@ def filter_data(df):
         'tip_frac',
         'pickup_hour'
     ]
-    return df[use_cols]
+    filtered_df = df[use_cols]
+    mask = (df['tip_amount'] > 0) & (df['total_amount'] > 0) & (df['total_amount'] < 10000)
+    filtered_df = filtered_df[mask]
+    return filtered_df
 
 
 def load_raw_data():
