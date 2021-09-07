@@ -6,7 +6,7 @@ from dask.distributed import Client
 from xgboost.dask import DaskDMatrix, predict, train
 
 ENVIRONMENT_NAME = 'travis-bickle-env'
-REQUIREMENTS = ["dask[complete]", "xgboost"]
+REQUIREMENTS = ["dask[complete]", "xgboost", "s3fs"]
 
 
 @contextlib.contextmanager
@@ -109,13 +109,22 @@ def main():
     make_software_env()
     with client_context() as client:
         print(client.dashboard_link)
+        print('Loading raw data')
         df = load_raw_data()
+        print('Featurizing data')
         featurize_data(df)
+        print('Filtering data')
         filtered_df = filter_data(df)
+        print('Splitting into train/test sets')
         train, train_labels, test, test_labels = split_data(filtered_df)
+        print(train.dtypes)
+        print('Forming dmatrix')
         d_train = make_dmatrix(client, train, train_labels)
+        print('Training classifier')
         training_output = train_tree(client, d_train)
+        print('Predicting on holdout data')
         prediction = predict(client, training_output, test)
+        print('Computing RMSE')
         rmse = compute_rmse(prediction, test_labels)
         print(f'RMSE of model against hold out data: {rmse}')
 
