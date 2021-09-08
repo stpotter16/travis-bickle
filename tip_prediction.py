@@ -96,6 +96,9 @@ def split_data(df):
     del train['tip_amount']
     del test['tip_amount']
 
+    del train['fare_amount']
+    del test['fare_amount']
+
     return train, train_labels, test, test_labels
 
 
