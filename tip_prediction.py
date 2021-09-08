@@ -9,6 +9,7 @@ ENVIRONMENT_NAME = 'travis-bickle-env'
 REQUIREMENTS = ["dask[complete]", "xgboost", "s3fs"]
 
 
+# TODO: Just use the builtin...RTFM
 @contextlib.contextmanager
 def client_context():
     try:
@@ -47,6 +48,7 @@ def filter_data(df):
     filtered_df = df[use_cols]
     mask = (df['tip_amount'] > 0) & (df['total_amount'] > 0) & (df['total_amount'] < 10000)
     filtered_df = filtered_df[mask]
+    filtered_df = filtered_df.dropna()
     return filtered_df
 
 
@@ -57,7 +59,7 @@ def load_raw_data():
         dtype={
             "payment_type": "UInt8",
             "VendorID": "UInt8",
-            "passenger_count": "int32",
+            "passenger_count": "Int64",
             "RatecodeID": "UInt8",
             "store_and_fwd_flag": "category",
             "PULocationID": "UInt16",
@@ -88,6 +90,12 @@ def split_data(df):
     del train['tip_frac']
     del test['tip_frac']
 
+    del train['total_amount']
+    del test['total_amount']
+
+    del train['tip_amount']
+    del test['tip_amount']
+
     return train, train_labels, test, test_labels
 
 
@@ -116,10 +124,10 @@ def main():
         print('Filtering data')
         filtered_df = filter_data(df)
         print('Splitting into train/test sets')
-        train, train_labels, test, test_labels = split_data(filtered_df)
-        print(train.dtypes)
+        train_data, train_labels, test, test_labels = split_data(filtered_df)
+        print(train_data.dtypes)
         print('Forming dmatrix')
-        d_train = make_dmatrix(client, train, train_labels)
+        d_train = make_dmatrix(client, train_data, train_labels)
         print('Training classifier')
         training_output = train_tree(client, d_train)
         print('Predicting on holdout data')
