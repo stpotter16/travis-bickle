@@ -59,7 +59,7 @@ def load_raw_data():
         dtype={
             "payment_type": "UInt8",
             "VendorID": "UInt8",
-            "passenger_count": "Int64",
+            "passenger_count": "float",
             "RatecodeID": "UInt8",
             "store_and_fwd_flag": "category",
             "PULocationID": "UInt16",
